@@ -6,54 +6,58 @@
 /*   By: alappas <alappas@student.42wolfsburg.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 16:28:30 by alappas           #+#    #+#             */
-/*   Updated: 2024/05/16 21:25:49 by alappas          ###   ########.fr       */
+/*   Updated: 2024/05/27 15:09:15 by alappas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef SERVER_HPP
 # define SERVER_HPP
-# include <iostream>
-# include <vector>
-# include <map>
-# include <cstring>
-# include <istream>
-# include <fstream>
-# include <sstream>
-# include <cstdlib>
-# include <unistd.h>
-# include <sys/socket.h>
-# include <sys/epoll.h>
-# include <fcntl.h>
-# include <netinet/in.h>
-# include <arpa/inet.h>
+# include "Headers.hpp"
 
 class Server {
 	private:
-		int _server_fds;
-		int _epoll_fds;
+		int _server_fd;
+		int _epoll_fd;
 		std::string _port;
 		std::string _password;
 		std::string _ip_to_server;
+		std::vector<int> _client_fds;
+		std::map<int, Client> _client_data;
+		std::map<int, time_t> _client_time;
+		int _client_amount;
 	public:
 		
 		//Constructors
 		Server(std::string port, std::string password);
 		~Server();
+		Server(const Server &other);
+		Server& operator=(const Server &other);
 
 		//Member functions
 		int		checkSocketPort(std::string port);
 		int		createSocket();
 		int		bindSocket(std::string port);
 		int		listenSocket();
-		int		combineFds();
+		int		combineFds(int socket_fd);
 		void	createEpoll();
 		void	createServer();
 		void	initEvents();
-		bool getRequest(int client_fd, std::string &request);
+		int		checkClient(int client_fd);
+		bool	getRequest(int client_fd, std::string &request);
+		int		setNonBlocking(int fd);
 		std::string getPort() const;
+		void	setTimeout(int client_fd);
+		void	checkClientTimeout();
+		void 	handleIncomingConnection();
+		void 	handleIncomingData(int client_fd);
+		bool 	checkConnection(int client_fd, std::vector<std::string> &request);
+		void 	handleMessages(int client_fd, std::vector<std::string> &request);
+		void	deleteClient(int client_fd);
 
-		//Temporal function until we have a completed config file
-		void handleIncomingConnection(int server_fd);
+		void	handleQuit(int client_fd);
+		void	handleNick(int client_fd, std::string nick);
+
+		std::vector<std::string> split(const std::string &s, char delim);
 };
 
 #endif

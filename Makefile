@@ -2,7 +2,7 @@ NAME = ircserv
 
 # COMPILER
 CC = c++
-CFLAGS = -Werror -Wall -Wextra -std=c++98 #-fsanitize=address
+CFLAGS = -Werror -Wall -Wextra -std=c++98
 RM = rm -rf
 
 # DIRECTORIES
