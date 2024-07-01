@@ -6,7 +6,7 @@
 /*   By: alappas <alappas@student.42wolfsburg.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 16:28:07 by alappas           #+#    #+#             */
-/*   Updated: 2024/06/03 18:25:38 by alappas          ###   ########.fr       */
+/*   Updated: 2024/06/26 16:38:22 by alappas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -313,7 +313,10 @@ std::vector<std::string> Server::split(const std::string &s, char delimiter)
     std::istringstream tokenStream(s);
 
     while (std::getline(tokenStream, token, delimiter))
+	{
         tokens.push_back(token);
+		std::cout << "Token: " << token << std::endl;
+	}
     return tokens;
 }
 
@@ -359,12 +362,7 @@ void	Server::handleMessages(int client_fd, std::vector<std::string> &request){
 		if (it->compare(0, 4, "QUIT") == 0)
 			handleQuit(client_fd);
 		if (it->compare(0, 4, "JOIN") == 0)
-		{
-			// std::string channel = it->substr(5);
-			// if (!channel.empty() && channel[channel.size() - 1] == '\r')
-			// 	channel.erase(channel.size() - 1);
-			// std::cout << "Client: " << client_fd << " joined channel: " << channel << std::endl;
-		}
+			handleJoin(client_fd, split(it->substr(5), ' '));
 	}
 }
 
@@ -385,6 +383,14 @@ void	Server::handleQuit(int client_fd)
 	return (deleteClient(client_fd));
 }
 
+void	Server::handleJoin(int client_fd, std::vector<std::string> channel)
+{
+	for (std::vector<std::string>::iterator it = channel.begin(); it != channel.end(); it++)
+	{
+		std::cout << "Client: " << client_fd << " joined channel: " << *it << std::endl;
+	}
+}
+
 // void	Server::handleNick(int client_fd, std::string nick)
 // {
 // 	std::vector<std::string> client = std::
@@ -396,3 +402,4 @@ void	Server::handleQuit(int client_fd)
 // 	std::cout << "Client: " << client_fd << " changed nick to: " << nick << std::endl;
 // 	_client_data.find(client_fd)->second.setNick(nick);
 // }
+

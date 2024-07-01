@@ -6,7 +6,7 @@
 /*   By: alappas <alappas@student.42wolfsburg.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 16:28:30 by alappas           #+#    #+#             */
-/*   Updated: 2024/05/27 15:09:15 by alappas          ###   ########.fr       */
+/*   Updated: 2024/06/26 16:35:43 by alappas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,11 +53,13 @@ class Server {
 		bool 	checkConnection(int client_fd, std::vector<std::string> &request);
 		void 	handleMessages(int client_fd, std::vector<std::string> &request);
 		void	deleteClient(int client_fd);
+		std::vector<std::string> split(const std::string &s, char delim);
+		
 
 		void	handleQuit(int client_fd);
+		void 	handleJoin(int client_fd, std::vector<std::string> channel);
 		void	handleNick(int client_fd, std::string nick);
 
-		std::vector<std::string> split(const std::string &s, char delim);
 };
 
 #endif
